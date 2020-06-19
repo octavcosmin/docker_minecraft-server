@@ -1,0 +1,145 @@
+#!/bin/sh
+
+ProgName=$(basename $0)
+
+sub_help(){
+	echo "Usage: $ProgName <subcommand> [options]"
+	echo ""
+	echo "Subcommands:"
+	echo "	backup		Makes backup of the server files."
+	echo "	get		Downloads 'server.jar' from the specified link."
+	echo "	import		Imports Minecraft Backup files from specified folder."
+	echo "	start		Starts server.jar."
+	echo ""
+	echo "For help with each command run: $ProgName <subcommand> -h|--help"
+	echo ""
+}
+
+sub_import(){
+	for arg in "$@"
+	do
+		case $arg in
+			"" | "-h" | "--help")
+				echo "Usage: $ProgName import [OPTIONS] <source folder (absolute path)>"
+				echo ""
+				echo "Options:"
+				echo "	-h|--help	Shows the usage and this list of options."
+				echo "	-v|--verbose	Shows files being copied."
+				exit 1
+				;;
+			"-v" | "--verbose")
+				local use_verbose="-v"
+				;;
+			*)
+				cp $use_verbose -r \
+				$arg/{world,server.properties,server-icon.*,banned-ips.json,banned-layers.json,ops.json,whitelist.json} \
+				/data
+				;;
+		esac
+	done
+}
+
+sub_start(){
+	local memory="1G"
+	for arg in "$@"
+	do
+		case $arg in
+			"" | "-h" | "--help")
+				echo "Usage: $ProgName start [OPTIONS]"
+				echo ""
+				echo "Options:"
+				echo "	-h|--help	Shows this helpful information."
+				echo "	-s|--screen	Start in new screen (default: false)."
+				echo "				Press 'Ctrl+a' then 'd' to detach from the screen sesion;"
+				echo "				Reattach to the screen sesion with 'screen -r'"
+				echo "	-m|--memory	Specify amounnt of memory the server should use (default: 1GB)."
+				echo "			Memory Formats:"
+				echo "				-GigaBytes: <amount (integer)>G"
+				echo "				-MegaBytes: <amount (integer)>M"
+				exit 1
+				;;
+			"-s" | "--screen")
+				use_screen="screen"
+				;;
+			"-m" | "--memory")
+				memory="$arg"
+				;;
+		esac
+	done
+	cd /data
+	$use_screen java -jar -Xms$memory -Xmx$memory server.jar nogui
+}
+
+sub_backup(){
+	for arg in "$@"
+	do
+		case $arg in
+			"" | "-h" | "--help")
+				echo "Usage: $ProgName backup [OPTIONS] [folder for backup (absolute path)]"
+				echo ""
+				echo "Options:"
+				echo "	-h|--help		Shows this helpful information."
+				echo "	-v|--verbose		Shows the files being backed up."
+				echo ""
+				echo "Arguments:"
+				echo "	[folder for backup]	Specify a folder for the bacup (default: /home/backups/)."
+				exit 1
+				;;
+			"-v" | "--verbose")
+				local use_verbose="-v"
+				;;
+			*)
+				local use_custom_folder="$arg"
+				;;
+		esac
+	done
+	current_date=$(date +'%Y.%m.%d-%H:%M:%S')
+	if [ -z $use_custom_folder ]; then
+		cp $use_verbose /data{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} \
+		 /backups/$current_date
+	else
+		cp $use_verbose /data{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} \
+		$use_custom_folder
+	fi
+}
+
+sub_get(){
+	for arg in "$@"
+	do
+		case $arg in
+			"" | "-h" | "--help")
+				echo "Usage: $ProgName get [OPTIONS] <download link>"
+				echo ""
+				echo "Options:"
+				echo "	-h|--help	Shows this helpful information."
+				echo ""
+				echo "Arguments:"
+				echo "<download link>	The link where 'server.jar' will be downloaded from."
+				echo "			Check the 'README' on 'hub.docker.com/repository/docker/octavcosmin/minecraft-server' for further information"
+				exit 1
+				;;
+			*)
+				download_link=$arg
+		esac
+	done
+	cd /data
+	echo "Downloading executable..."
+	wget $download_link
+	echo "Done"
+}
+
+subcommand=$1
+case $subcommand in
+	"" | "-h" | "--help")
+		sub_help
+		;;
+	*)
+		shift
+		sub_${subcommand} $@
+		if [ $? = 127 ]; then
+			echo "Error: '$subcommand' is not known as a subcommand."  >&2
+			echo "Run '$ProgName -h|--help' for a list of known subcommands"
+			exit 1
+		fi
+		;;
+esac
