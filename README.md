@@ -5,6 +5,7 @@ This is a simple docker container based on [Alpine](https://hub.docker.com/_/alp
 
 ## Versions
  - latest (default)
+ - v1.2
  - v1.1
  - v1
 
@@ -78,6 +79,10 @@ This is a guide meant to help docker beginners setup their container.
 If you want to import a previous backup run `mcserver import /backups/<folder>`.
 
 ## Change Log
+ - v1.2
+ > - Added bash.
+ > - Fixed execution errors with `mcserver`.
+ > - Fixed `mcserver import` and `mcserver backup`.
  - v1.1
  > - Version "latest" is being auto-built from the [GitHub repository](https://github.com/octavcosmin/docker_minecraft-server).
  > - Created a Dockerfile for manual builds.
