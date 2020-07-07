@@ -5,6 +5,7 @@ This is a simple docker container based on [Alpine](https://hub.docker.com/_/alp
 
 ## Versions
  - latest (default)
+ - v1.3
  - v1.2
  - v1.1
  - v1
@@ -79,6 +80,9 @@ This is a guide meant to help docker beginners setup their container.
 If you want to import a previous backup run `mcserver import /backups/<folder>`.
 
 ## Change Log
+ - v1.3
+ > - Added autocompletion to the `mcserver` command.
+ >  - Fixed `mcserver backup`.
  - v1.2
  > - Added bash.
  > - Fixed execution errors with `mcserver`.
@@ -91,5 +95,5 @@ If you want to import a previous backup run `mcserver import /backups/<folder>`.
  - v1: **First version**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE5MjY1MDEyM119
+eyJoaXN0b3J5IjpbMzA0MDI4ODE3XX0=
 -->
