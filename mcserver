@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ProgName=$(basename $0)
-# FILES=( "world" "server.properties" "server-icon.*" "banned-ips.json" "banned-players.json" "ops.json" "whitelist.json" )
 
 sub_help(){
 	echo "Usage: $ProgName <subcommand> [options]"
@@ -95,8 +94,12 @@ sub_backup(){
 	done
 	current_date=$(date +'%Y.%m.%d-%H:%M:%S')
 	if [ -z $use_custom_folder ]; then
+		mkdir /backups/$current_date
+		echo "Backing up data. This might take a while."
 		cp $use_verbose /data/{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} /backups/$current_date
 	else
+		[ ! -d "$use_custom_folder" ] && mkdir $use_custom_folder
+		echo "Backing up data. This might take a while."
 		cp $use_verbose /data/{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} $use_custom_folder
 	fi
 }

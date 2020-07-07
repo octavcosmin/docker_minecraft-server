@@ -1,9 +1,10 @@
 FROM alpine
-CMD ["/bin/bash"]
-
-COPY mcserver /bin/
+CMD /bin/bash
+MAINTAINER cosmin.tavian@gmail.com
 
 EXPOSE 25565 25575
+
+COPY mcserver mcserver-completion.bash /root/docker-data/
 VOLUME /data /backups
 
 RUN \
@@ -14,4 +15,8 @@ RUN \
  rm -v -rf /var/cache.apk/* &&\
 \
  echo "~~~make adjustments~~~" &&\
- chmod +x /bin/mcserver
+ chmod +x /root/docker-data/mcserver &&\
+ echo "PATH=$PATH:/root/docker-data" >> ~/.bashrc &&\
+ echo "source /root/docker-data/mcserver-completion.bash" >> ~/.bashrc
+
+
