@@ -90,3 +90,6 @@ If you want to import a previous backup run `mcserver import /backups/<folder>`.
  > Updated the README
  - v1: **First version**
 
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTE5MjY1MDEyM119
+-->
