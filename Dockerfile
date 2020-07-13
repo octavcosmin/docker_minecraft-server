@@ -1,6 +1,6 @@
 FROM alpine
 CMD /bin/bash
-MAINTAINER cosmin.tavian@gmail.com
+LABEL maintainer="Macovei Octavian-Cosmin"
 
 EXPOSE 25565 25575
 
