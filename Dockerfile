@@ -1,6 +1,19 @@
 FROM alpine
 CMD /bin/bash
-LABEL maintainer="Macovei Octavian-Cosmin"
+LABEL version="v1.3.1" \
+    schema-version="1.0" \
+    maintainer="Macovei Octavian-Cosmin" \
+    name="Minecraft Server" \
+    description="Docker container based on Alpine, made for running a Minecraft server" \
+    url="https://github.com/octavcosmin/docker_minecraft-server" \
+    vcs-url="https://github.com/alpinelinux/docker-alpine" \
+    docker.cmd="docker run -d -it \
+--name minecraft-server \
+-p <server-port>:25565 \
+-p <console-port>:25575 \
+-v <path-to-data-folder>:/data \
+-v <path-to-backups-folder>:/backups \
+octavcosmin/minecraft-server"
 
 EXPOSE 25565 25575
 
