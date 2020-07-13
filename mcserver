@@ -7,7 +7,7 @@ sub_help(){
 	echo ""
 	echo "Subcommands:"
 	echo "	backup		Makes backup of the server files."
-	echo "	get		Downloads 'server.jar' from the specified link."
+	echo "	get			Downloads 'server.jar' from the specified link."
 	echo "	import		Imports Minecraft Backup files from specified folder."
 	echo "	start		Starts server.jar."
 	echo ""
@@ -23,7 +23,7 @@ sub_import(){
 				echo "Usage: $ProgName import [OPTIONS] <source folder (absolute path)>"
 				echo ""
 				echo "Options:"
-				echo "	-h|--help	Shows the usage and this list of options."
+				echo "	-h|--help		Shows the usage and this list of options."
 				echo "	-v|--verbose	Shows files being copied."
 				exit 1
 				;;
@@ -42,6 +42,23 @@ sub_start(){
 	local memory="1G"
 	for arg in "$@"
 	do
+		if [[ $memory == "getMemory" ]]; then
+			if [[ $arg =~ [^-]+ ]]; then
+				memory=$arg
+			else
+				echo "Amount of memory ommited. Check 'mcserver start --help' for more information."
+				exit 1;
+			fi
+			continue
+		fi
+		if [[ $name == "mcserver" ]]; then
+			if [[ $arg =~ [^-]+ ]]; then
+				name=$arg
+			else
+				name="mcserver"
+			fi
+			continue
+		fi
 		case $arg in
 			"" | "-h" | "--help")
 				echo "Usage: $ProgName start [OPTIONS]"
@@ -49,24 +66,28 @@ sub_start(){
 				echo "Options:"
 				echo "	-h|--help	Shows this helpful information."
 				echo "	-s|--screen	Start in new screen (default: false)."
-				echo "				Press 'Ctrl+a' then 'd' to detach from the screen sesion;"
-				echo "				Reattach to the screen sesion with 'screen -r'"
+				echo "			You can add the session name as an argument to this option."
+				echo "			For example, 'mcserver start -s myServer' (default: 'mcserver)'."
+				echo "			Working with 'screen':"
+				echo "					Press 'Ctrl+a' then 'd' to detach from the screen sesion;"
+				echo "					Reattach to the screen sesion with 'screen -r [mcserver|name specified at startup]'"
 				echo "	-m|--memory	Specify amounnt of memory the server should use (default: 1GB)."
 				echo "			Memory Formats:"
-				echo "				-GigaBytes: <amount (integer)>G"
-				echo "				-MegaBytes: <amount (integer)>M"
+				echo "					-GigaBytes: <amount (integer)>G"
+				echo "					-MegaBytes: <amount (integer)>M"
 				exit 1
 				;;
 			"-s" | "--screen")
-				use_screen="screen"
+				use_screen="screen -S"
+				name="mcserver"
 				;;
 			"-m" | "--memory")
-				memory="$arg"
+				memory="getMemory"
 				;;
 		esac
 	done
 	cd /data
-	$use_screen java -jar -Xms$memory -Xmx$memory server.jar nogui
+	$use_screen $name java -jar -Xms$memory -Xmx$memory server.jar nogui
 }
 
 sub_backup(){
@@ -78,10 +99,10 @@ sub_backup(){
 				echo ""
 				echo "Options:"
 				echo "	-h|--help		Shows this helpful information."
-				echo "	-v|--verbose		Shows the files being backed up."
+				echo "	-v|--verbose	Shows the files being backed up."
 				echo ""
 				echo "Arguments:"
-				echo "	[folder for backup]	Specify a folder for the bacup (default: /home/backups/)."
+				echo "		[folder for backup]	Specify a folder for the bacup (default: /home/backups/)."
 				exit 1
 				;;
 			"-v" | "--verbose")
@@ -96,11 +117,11 @@ sub_backup(){
 	if [ -z $use_custom_folder ]; then
 		mkdir /backups/$current_date
 		echo "Backing up data. This might take a while."
-		cp $use_verbose /data/{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} /backups/$current_date
+		cp $use_verbose -r /data/{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} /backups/$current_date
 	else
 		[ ! -d "$use_custom_folder" ] && mkdir $use_custom_folder
 		echo "Backing up data. This might take a while."
-		cp $use_verbose /data/{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} $use_custom_folder
+		cp $use_verbose -r /data/{world,banned-ips.json,banned_players.json,ops.json,server.properties,whitelist.json} $use_custom_folder
 	fi
 }
 
@@ -115,7 +136,7 @@ sub_get(){
 				echo "	-h|--help	Shows this helpful information."
 				echo ""
 				echo "Arguments:"
-				echo "<download link>	The link where 'server.jar' will be downloaded from."
+				echo "	<download link>	The link where 'server.jar' will be downloaded from."
 				echo "			Check the 'README' on 'hub.docker.com/repository/docker/octavcosmin/minecraft-server' for further information"
 				exit 1
 				;;
