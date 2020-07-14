@@ -83,7 +83,7 @@ If you want to import a previous backup run `mcserver import /backups/<folder>`.
 ## Change Log
  - v1.3.1
  > - Changed now deprecated 'MAINTAINER' in Dockerfile.
- > - 
+ > - Fixed `mcserver start` flags.
  - v1.3
  > - Added autocompletion to the `mcserver` command.
  >  - Fixed `mcserver backup`.
@@ -99,5 +99,5 @@ If you want to import a previous backup run `mcserver import /backups/<folder>`.
  - v1: **First version**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNjU3NzU0OTUsMzA0MDI4ODE3XX0=
+eyJoaXN0b3J5IjpbMTEzNTg5ODA5MSwzMDQwMjg4MTddfQ==
 -->
